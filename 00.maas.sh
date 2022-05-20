@@ -6,9 +6,7 @@
 # This script is ment to setup a basic MAAS server on a fresh Ubuntu Server 22.04
 # installation. 
 
-# Define the setup parameters:
-LAUNCHPAD_ID=aldostein
-GITUB_ID=aldorguez
+##============================[ MAAS Setup Parameters ]================================##
 
 MAAS_VERSION=3.1/stable
 MAAS_DBUSER=maascli
@@ -21,15 +19,17 @@ MAAS_USER=admin
 MAAS_PASS=Password
 MAAS_EMAIL=aldo.cnyn@gmail.com
 
+MAAS_SSH_KEY=lp:aldostein
+###  Launchpad (lp:user-id) or Github (gh:user-id)
+DNS=8.8.8.8
+
+##==================================[ Parameters ]=====================================##
+
 MAAS_IPADDRESS=$(hostname -I | head -1 | awk '{print $1}')
 MAAS_PORT=5240
 MAAS_URL=http://$MAAS_IPADDRESS:$MAAS_PORT/MAAS
 
-MAAS_SSH_KEY=lp:$LAUNCHPAD_ID
-###  Launchpad (lp:user-id) or Github (gh:user-id)
-
 MAAS_IPV4_IF=$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)
-DNS=8.8.8.8
 
 ECHO="echo -e "
 DEBUG=true
