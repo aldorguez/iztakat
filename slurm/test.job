@@ -1,0 +1,11 @@
+#!/bin/sh
+
+#SBATCH --job-name=Test
+#SBATCH --nodes=4 --ntasks=24 --cpus-per-task=1 --ntasks-per-node=6
+#SBATCH --time=1:00:00
+#SBATCH -o test-%j.o
+#SBATCH -e test-%j.e
+#SBATCH --partition=cpu
+
+srun hostname
+
