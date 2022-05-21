@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Install necesary packages
-sudo apt install -y build-essential lbzip2
+sudo apt install -y build-essential lbzip2 dejagnu
 
 ### TCL
 
@@ -11,9 +11,8 @@ tar xf tcl8.6.12-src.tar.gz
 cd tcl8.6.12/unix
 ./configure --prefix=/share/utils/tcltk/8.6.12 --enable-shared &&\
 make && \
-make test && \
 sudo make install
-
+cd ../..
 
 ### TK
 
@@ -25,5 +24,4 @@ tar xf tk8.6.12-src.tar.gz
 cd tk8.6.12/unix
 ./configure --prefix=/share/utils/tcltk/8.6.12 --with-tcl=/share/utils/tcltk/8.6.12/lib --enable-shared && \
 make && \
-make test && \
 sudo make install
