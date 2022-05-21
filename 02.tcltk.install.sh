@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Install necesary packages
+sudo apt install -y build-essential lbzip2
+
 ### TCL
 
 wget https://prdownloads.sourceforge.net/tcl/tcl8.6.12-src.tar.gz
