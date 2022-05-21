@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sudo apt install -y nfs-common
+sudo apt install -y nfs-common nfs-kernel-server
 
 sudo mkdir /{share,scratch}
 
