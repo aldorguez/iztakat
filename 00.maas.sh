@@ -90,7 +90,6 @@ sudo maas createadmin --username $MAAS_USER --password $MAAS_PASS \
 
 MAAS_API_KEY=$(sudo maas apikey --username=$MAAS_USER | head -1)
 
-if $DEBUG ; then $ECHO "\nMAAS_API_KEY=$MAAS_API_KEY\n"; fi
 if [ -z $MAAS_API_KEY ]
 then
     $ECHO "MAAS_API_KEY is empty!"
