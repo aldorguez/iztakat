@@ -14,4 +14,4 @@ sudo chmod --recursive 644 /etc/slurm-llnl
 sudo cp -p /etc/slurm-llnl/{slurm.conf,cgroup.conf} /share/conf/slurm
 
 sudo chown --recursive root:root /share/conf
-sudo chmod --recursive 600 /share/conf
+sudo chmod --recursive 400 /share/conf
