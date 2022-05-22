@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Install necesary packages
-sudo apt install -y build-essential lbzip2 dejagnu
+sudo apt-get install -y build-essential lbzip2 dejagnu
 
 ### TCL
 
