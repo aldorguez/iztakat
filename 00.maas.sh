@@ -36,12 +36,12 @@ DEBUG=true
 
 ##====================================[ Start ]=======================================##
 
-# sudo apt update && sudo apt upgrade -y && sudo autoremove -y
+# sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get autoremove -y
 
 sudo snap install --channel=$MAAS_VERSION maas
 sudo snap install jq
 
-sudo apt install -y postgresql
+sudo apt-get install -y postgresql
 
 PSQL_VERSION=$(psql --version | awk '{ split($3,x,"."); print $3 }' | cut -d. -f1)
 
