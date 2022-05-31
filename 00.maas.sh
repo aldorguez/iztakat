@@ -3,7 +3,7 @@
 # Copyright 2021-2022 Aldo Rodríguez.
 # This software is licensed under the GNU Affero General Public License version 3
 # 
-# This script is ment to setup a basic MAAS server on a fresh Ubuntu Server 22.04
+# This script is ment to setup a basic MAAS server on a fresh Ubuntu Server 20.04.4
 # installation. 
 
 ##============================[ MAAS Setup Parameters ]================================##
@@ -25,15 +25,15 @@ DNS=8.8.8.8
 
 ##==================================[ Parameters ]=====================================##
 
-MAAS_IPADDRESS=$(hostname -I | head -1 | awk '{print $1}')
+MAAS_INTERFACE=$(ip -j -4 route show default | jq -r '.[].dev')
+
+MAAS_IPADDRESS=$(ip -j -4 addr show dev $MAAS_INTERFACE | jq -r '.[].addr_info[].local')
 MAAS_PORT=5240
 MAAS_URL=http://$MAAS_IPADDRESS:$MAAS_PORT/MAAS
 
-MAAS_IPV4_IF=$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)
-
 ECHO="echo -e"
 READ="read -n 1 -s -r -p"
-DEBUG=true
+DEBUG=false
 
 ##====================================[ Start ]=======================================##
 
@@ -74,6 +74,7 @@ if $DEBUG ; then
 fi
 sudo maas init $MAAS_MODE --maas-url $MAAS_URL \
     --database-uri "postgres://$MAAS_DBUSER:$MAAS_DBPASS@localhost/$MAAS_DBNAME"
+sleep 15
 
 if $DEBUG ; then
   $ECHO
@@ -102,7 +103,6 @@ if $DEBUG ; then
   $READ "Press anykey to execute the above command..."
 fi
 maas login $MAAS_USER $MAAS_URL $MAAS_API_KEY
-# sleep 15
 
 if $DEBUG ; then
   $ECHO
