@@ -25,12 +25,6 @@ DNS=8.8.8.8
 
 ##==================================[ Parameters ]=====================================##
 
-MAAS_INTERFACE=$(ip -j -4 route show default | jq -r '.[].dev')
-
-MAAS_IPADDRESS=$(ip -j -4 addr show dev $MAAS_INTERFACE | jq -r '.[].addr_info[].local')
-MAAS_PORT=5240
-MAAS_URL=http://$MAAS_IPADDRESS:$MAAS_PORT/MAAS
-
 ECHO="echo -e"
 READ="read -n 1 -s -r -p"
 DEBUG=false
@@ -41,6 +35,12 @@ DEBUG=false
 
 sudo snap install --channel=$MAAS_VERSION maas
 sudo snap install jq
+
+MAAS_INTERFACE=$(ip -j -4 route show default | jq -r '.[].dev')
+
+MAAS_IPADDRESS=$(ip -j -4 addr show dev $MAAS_INTERFACE | jq -r '.[].addr_info[].local')
+MAAS_PORT=5240
+MAAS_URL=http://$MAAS_IPADDRESS:$MAAS_PORT/MAAS
 
 sudo apt install -y postgresql
 
