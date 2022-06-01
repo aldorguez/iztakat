@@ -42,6 +42,15 @@ MAAS_IPADDRESS=$(ip -j -4 addr show dev $MAAS_INTERFACE | jq -r '.[].addr_info[]
 MAAS_PORT=5240
 MAAS_URL=http://$MAAS_IPADDRESS:$MAAS_PORT/MAAS
 
+# Enable IP forwarding
+sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
+sudo sysctl -p
+sudo iptables -t nat -A POSTROUTING -o $INTERFACE -j SNAT --to $MAAS_IPADDRESS
+# Persisting NAT
+echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
+sudo apt-get install iptables-persistent -y
+
 sudo apt install -y postgresql
 
 PSQL_VERSION=$(psql --version | awk '{ split($3,x,"."); print $3 }' | cut -d. -f1)
@@ -104,16 +113,21 @@ if $DEBUG ; then
 fi
 maas login $MAAS_USER $MAAS_URL $MAAS_API_KEY
 
+MAAS_SUBNET24="$(hostname -I | cut -d" " -f2 | cut -d. -f1,2,3)"
+MAAS_SUBNET="$MAAS_SUBNET24".0/24
+MAAS_VLAN=$(maas admin subnet read $MAAS_SUBNET | grep fabric_id | \
+    cut -d ':' -f 2 | cut -d ',' -f 1)
+MAAS_CTRL=$(maas admin rack-controllers read | grep hostname | cut -d '"' -f 4)
+
+# maas admin subnet update $MAAS_SUBNET gateway_ip=10.0.0.1
 if $DEBUG ; then
   $ECHO
-  $ECHO "maas admin maas set-config name=upstream_dns value=$DNS"
+  $ECHO maas admin subnet update $MAAS_SUBNET gateway_ip=$MAAS_SUBNET24.1
   $READ "Press anykey to execute the above command..."
 fi
-maas admin maas set-config name=upstream_dns value=$DNS
-
+maas admin subnet update $MAAS_SUBNET gateway_ip=$MAAS_SUBNET24.1
 
 # maas admin ipranges create type=dynamic start_ip=10.0.0.10 end_ip=10.0.0.250
-MAAS_SUBNET24="$(hostname -I | cut -d" " -f2 | cut -d. -f1,2,3)"
 if $DEBUG ; then
   $ECHO
   $ECHO maas admin ipranges create type=dynamic start_ip=$MAAS_SUBNET24.10 end_ip=$MAAS_SUBNET24.250
@@ -122,13 +136,16 @@ fi
 maas admin ipranges create type=dynamic start_ip=$MAAS_SUBNET24.10 end_ip=$MAAS_SUBNET24.250
 
 # maas admin vlan update 1 untagged dhcp_on=True primary_rack=master
-MAAS_SUBNET="$MAAS_SUBNET24".0/24
-MAAS_VLAN=$(maas admin subnet read $MAAS_SUBNET | grep fabric_id | \
-    cut -d ':' -f 2 | cut -d ',' -f 1)
-MAAS_CTRL=$(maas admin rack-controllers read | grep hostname | cut -d '"' -f 4)
 if $DEBUG ; then
   $ECHO
   $ECHO "maas admin vlan update $MAAS_VLAN untagged dhcp_on=True primary_rack=$MAAS_CTRL"
   $READ "Press anykey to execute the above command..."
 fi
 maas admin vlan update $MAAS_VLAN untagged dhcp_on=True primary_rack=$MAAS_CTRL
+
+if $DEBUG ; then
+  $ECHO
+  $ECHO "maas admin maas set-config name=upstream_dns value=$DNS"
+  $READ "Press anykey to execute the above command..."
+fi
+maas admin maas set-config name=upstream_dns value=$DNS
