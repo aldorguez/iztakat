@@ -120,7 +120,7 @@ MAAS_VLAN=$(maas admin subnet read $MAAS_SUBNET | grep fabric_id | \
     cut -d ':' -f 2 | cut -d ',' -f 1)
 MAAS_CTRL=$(maas admin rack-controllers read | grep hostname | cut -d '"' -f 4)
 
-# maas admin subnet update $MAAS_SUBNET gateway_ip=10.0.0.254
+# maas admin subnet update $MAAS_SUBNET gateway_ip=10.0.0.1
 if $DEBUG ; then
   $ECHO
   $ECHO maas admin subnet update $MAAS_SUBNET gateway_ip=$MAAS_SUBNETGW
