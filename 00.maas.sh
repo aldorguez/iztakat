@@ -113,19 +113,20 @@ if $DEBUG ; then
 fi
 maas login $MAAS_USER $MAAS_URL $MAAS_API_KEY
 
+MAAS_SUBNETGW="$(hostname -I | cut -d" " -f2)"
 MAAS_SUBNET24="$(hostname -I | cut -d" " -f2 | cut -d. -f1,2,3)"
 MAAS_SUBNET="$MAAS_SUBNET24".0/24
 MAAS_VLAN=$(maas admin subnet read $MAAS_SUBNET | grep fabric_id | \
     cut -d ':' -f 2 | cut -d ',' -f 1)
 MAAS_CTRL=$(maas admin rack-controllers read | grep hostname | cut -d '"' -f 4)
 
-# maas admin subnet update $MAAS_SUBNET gateway_ip=10.0.0.1
+# maas admin subnet update $MAAS_SUBNET gateway_ip=10.0.0.254
 if $DEBUG ; then
   $ECHO
-  $ECHO maas admin subnet update $MAAS_SUBNET gateway_ip=$MAAS_SUBNET24.1
+  $ECHO maas admin subnet update $MAAS_SUBNET gateway_ip=$MAAS_SUBNETGW
   $READ "Press anykey to execute the above command..."
 fi
-maas admin subnet update $MAAS_SUBNET gateway_ip=$MAAS_SUBNET24.1
+maas admin subnet update $MAAS_SUBNET gateway_ip=$MAAS_SUBNETGW
 
 # maas admin ipranges create type=dynamic start_ip=10.0.0.10 end_ip=10.0.0.250
 if $DEBUG ; then
