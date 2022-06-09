@@ -20,8 +20,9 @@ sudo apt-get install -y rdma-core
 
 # SLURM
 sudo apt-get install -y slurm-client slurmd
-sudo cp -p /share/conf/slurm/{slurm.conf,cgroup.conf} /etc/slurm-llnl
-sudo chmod 644 /etc/slurm-llnl/{slurm.conf,cgroup.conf}
+sudo cp -p /share/conf/slurm/slurm.conf /etc/slurm-llnl
+sudo cp -p /share/conf/slurm/cgroup.conf /etc/slurm-llnl
+sudo chmod 644 /etc/slurm-llnl/*.conf
 
 #  Munge
 sudo cp -p /share/conf/munge/munge.key  /etc/munge
