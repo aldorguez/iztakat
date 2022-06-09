@@ -45,7 +45,7 @@ MAAS_URL=http://$MAAS_IPADDRESS:$MAAS_PORT/MAAS
 # Enable IP forwarding
 sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
 sudo sysctl -p
-sudo iptables -t nat -A POSTROUTING -o $INTERFACE -j SNAT --to $MAAS_IPADDRESS
+sudo iptables -t nat -A POSTROUTING -o $MAAS_INTERFACE -j SNAT --to $MAAS_IPADDRESS
 # Persisting NAT
 echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
 echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
