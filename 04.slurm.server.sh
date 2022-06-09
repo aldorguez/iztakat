@@ -19,4 +19,5 @@ sudo systemctl restart slurmctld.service
 sudo cp -p /etc/slurm-llnl/*.conf /share/conf/slurm
 
 sudo chown --recursive root:root /share/conf
-sudo chmod --recursive 400 /share/conf
+sudo chmod 511 /share/conf/*
+sudo chmod 511 /share/conf
